@@ -9,46 +9,21 @@ import {
   Modal,
 } from 'react-native';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebaseConfig';
+import { auth } from '../../../firebaseConfig';
+import { Ionicons } from '@expo/vector-icons';
+import { RegisterModal } from './RegisterModal';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isSignUpModalVisible, setIsSignUpModalVisible] = useState(false);
-
-  const SignUp = async () => {
-    try {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        setEmailError('Geçerli bir e-posta adresi giriniz.');
-        return;
-      }
-
-      setEmailError('');
-
-      if (password.length < 6) {
-        setPasswordError('Şifre en az 6 karakter içermelidir.');
-        return;
-      }
-
-      setPasswordError('');
-
-      await createUserWithEmailAndPassword(auth, email, password);
-      console.log('Kullanıcı başarıyla kaydedildi!');
-      setIsSignUpModalVisible(false);
-    } catch (error) {
-      console.error('Kayıt işlemi başarısız:', error.message);
-    }
-  };
+  const [showPassword, setShowPassword] = useState(false);
 
   const SignIn = async () => {
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      // Giriş işlemi başarılı olduysa burada istediğiniz aksiyonları gerçekleştirebilirsiniz.
     } catch (error) {
       alert('Giriş yapma başarısız!' + error.message);
     }
@@ -59,7 +34,7 @@ export default function Login() {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAvoidingView style={styles.container}>
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"
@@ -67,13 +42,23 @@ export default function Login() {
           onChangeText={(text) => setEmail(text)}
           style={styles.input}
         />
-        <TextInput
-          placeholder="Şifre"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          style={styles.input}
-          secureTextEntry
-        />
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TextInput
+            placeholder="Şifre"
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            style={styles.inputPass}
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Ionicons
+              name={showPassword ? 'eye' : 'eye-off'}
+              size={24}
+              color="black"
+              style={{ marginLeft: 10 }}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
@@ -89,60 +74,14 @@ export default function Login() {
         </TouchableOpacity>
       </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isSignUpModalVisible}
-        onRequestClose={() => {
-          setIsSignUpModalVisible(false);
-        }}
-
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TextInput
-              placeholder="Ad"
-              value={name}
-              onChangeText={(text) => setName(text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Soyad"
-              value={surname}
-              onChangeText={(text) => setSurname(text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Email"
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Şifre"
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              style={styles.input}
-              secureTextEntry
-            />
-
-            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-
-            {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity onPress={SignUp} style={styles.button}>
-                <Text style={styles.buttonText}>Kayıt Ol</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={toggleSignUpModal} style={[styles.button, styles.buttonOutline]}>
-                <Text style={styles.buttonOutlineText}>İptal</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <RegisterModal
+      isVisible={isSignUpModalVisible}
+      onClose={() => setIsSignUpModalVisible(false)}
+      />
     </KeyboardAvoidingView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -159,6 +98,16 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     marginTop: 5,
+    
+  },
+  inputPass: {
+    backgroundColor: 'white',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginTop: 5,
+    width:'87%'
+    
   },
   buttonContainer: {
     width: '60%',
@@ -199,6 +148,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
 
+
   },
   modalContent: {
     justifyContent: 'center',
@@ -209,6 +159,10 @@ const styles = StyleSheet.create({
     width: '80%',
     borderWidth: 2,
     borderColor: '#0782F9',
+
   },
+  modalInput: {
+    width: '80%',
+  }
 
 });
