@@ -8,7 +8,9 @@ import { User, onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import Deneme from './app/screens/Ürün/Kategoriler/Deneme';
+import UrunNav from './app/screens/Ürün/Kategoriler/UrunNav';
+import Profile from './app/screens/Profile/Profile';
+
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createBottomTabNavigator();
@@ -29,8 +31,8 @@ const screenOptions:any = {
 
 function InsideLayout() {
   return (
-    <InsideStack.Navigator initialRouteName="Kategoriler" screenOptions={screenOptions}>
-      <InsideStack.Screen name='Kategoriler' component={Kategoriler} options={{
+    <InsideStack.Navigator initialRouteName="UrunSayfasi" screenOptions={screenOptions}>
+      <InsideStack.Screen name='UrunSayfasi' component={UrunNav} options={{
         headerShown: false,
         tabBarIcon: ({ focused }) => (
           <Ionicons
@@ -40,9 +42,8 @@ function InsideLayout() {
           />
         ),
       }} />
-      <InsideStack.Screen name='deneme' component={Deneme} options={{
+      <InsideStack.Screen name='Profil Ekrani' component={Profile} options={{
         headerShown: false,
-        tabBarLabel: "deneme",
         tabBarIcon: ({ focused }) => (
           <Ionicons
             name={focused ? "person" : "person-outline"}
@@ -82,8 +83,6 @@ export default function App() {
               headerShown: false
             }} />
         )}
-
-
       </Stack.Navigator>
     </NavigationContainer>
   )
