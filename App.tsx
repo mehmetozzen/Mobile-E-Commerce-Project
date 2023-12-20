@@ -10,12 +10,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import UrunNav from './app/screens/Ürün/Kategoriler/UrunNav';
 import Profile from './app/screens/Profile/Profile';
+import Sepet from './app/screens/Sepet/Sepet';
+import ListeNav from './app/screens/Listeler/ListeNav';
 
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createBottomTabNavigator();
 
-const screenOptions:any = {
+const screenOptions: any = {
   tabBarShowLabel: false,
   tabBarHideOnKeyboard: true,
   headerShown: false,
@@ -42,6 +44,27 @@ function InsideLayout() {
           />
         ),
       }} />
+      <InsideStack.Screen name='Listeler' component={ListeNav} options={{
+        headerShown: false,
+        tabBarIcon: ({ focused }) => (
+          <Ionicons
+            name={focused ? "list" : "list-outline"}
+            size={24}
+            color={focused ? "#0782F9" : "#b3aaaa"}
+          />
+        ),
+      }} />
+      <InsideStack.Screen name='Sepet' component={Sepet} options={{
+        headerShown: false,
+        tabBarIcon: ({ focused }) => (
+          <Ionicons
+            name={focused ? "basket" : "basket-outline"}
+            size={24}
+            color={focused ? "#0782F9" : "#b3aaaa"}
+          />
+        ),
+      }} />
+
       <InsideStack.Screen name='Profil Ekrani' component={Profile} options={{
         headerShown: false,
         tabBarIcon: ({ focused }) => (

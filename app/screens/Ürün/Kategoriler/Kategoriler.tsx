@@ -35,7 +35,7 @@ const Kategoriler = ({ navigation }) => {
 
 
   return (
-    <SafeAreaView style={{ paddingBottom: 125 }}>
+    <SafeAreaView style={{ paddingBottom: 75 }}>
       <FlatList
         data={categories}
         renderItem={renderCategory}
