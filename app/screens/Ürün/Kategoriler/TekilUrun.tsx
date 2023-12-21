@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 const TekilUrun = ({ route }) => {
   const { product } = route.params;
   const [isWishlistSelected, setWishlistSelected] = useState(false);
-  
+
   const addToCart = () => {
     // Sepete ekleme 
     console.log('Sepete eklendi:', product.title);
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 8,
   },
-  addTolistButton:{
+  addTolistButton: {
     flex: 1,
     backgroundColor: 'green',
     borderRadius: 8,

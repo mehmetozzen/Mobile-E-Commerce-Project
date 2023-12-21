@@ -75,8 +75,8 @@ export default function Login() {
       </View>
 
       <RegisterModal
-      isVisible={isSignUpModalVisible}
-      onClose={() => setIsSignUpModalVisible(false)}
+        isVisible={isSignUpModalVisible}
+        onClose={() => setIsSignUpModalVisible(false)}
       />
     </KeyboardAvoidingView>
   );
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     marginTop: 5,
-    
+
   },
   inputPass: {
     backgroundColor: 'white',
@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     marginTop: 5,
-    width:'87%'
-    
+    width: '87%'
+
   },
   buttonContainer: {
     width: '60%',

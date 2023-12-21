@@ -14,8 +14,8 @@ const UrunNav = () => {
     <Stack.Navigator initialRouteName="Kategoriler" >
       <Stack.Screen name="Kategoriler" component={Kategoriler} />
       <Stack.Screen name="Urunler" component={UrunSayfasi} />
-      <Stack.Screen name="Tekil Urun" component={TekilUrun}  />
-      
+      <Stack.Screen name="Tekil Urun" component={TekilUrun} />
+
     </Stack.Navigator>
   );
 }
