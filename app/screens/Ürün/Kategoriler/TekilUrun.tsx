@@ -1,20 +1,157 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { auth, firestore } from '../../../../firebaseConfig';
+import { useNavigation } from '@react-navigation/native';
 const TekilUrun = ({ route }) => {
   const { product } = route.params;
+  const navigation = useNavigation();
   const [isWishlistSelected, setWishlistSelected] = useState(false);
+  const [isFavorilistSelected, setFavorilistSelected] = useState(false);
 
-  const addToCart = () => {
-    // Sepete ekleme 
-    console.log('Sepete eklendi:', product.title);
+  const addToCart = async () => {
+    try {
+      const userId = auth.currentUser.uid;
+
+      // Eklenecek ürün sepette var mı diye kontrol et
+      const cartQuery = query(collection(firestore, 'Sepet'), where('userId', '==', userId), where('title', '==', product.title));
+      const cartQuerySnapshot = await getDocs(cartQuery);
+
+      if (cartQuerySnapshot.empty) {
+        // Sepette yoksa yeni ürünü ekleyin
+        const cartItem = {
+          title: product.title,
+          price: product.price,
+          category: product.category,
+          thumbnail: product.thumbnail,
+          userId: userId,
+          quantity: 1, // Yeni eklenen ürünün miktarı 1
+        };
+
+        const cartCollection = collection(firestore, 'Sepet');
+        const docRef = await addDoc(cartCollection, cartItem);
+
+        console.log('Ürün sepete eklendi:', docRef.id);
+      } else {
+        // Sepette varsa miktarını artırın
+        const cartItem = cartQuerySnapshot.docs[0].data();
+        const cartItemId = cartQuerySnapshot.docs[0].id;
+
+        await updateDoc(doc(firestore, 'Sepet', cartItemId), {
+          quantity: cartItem.quantity + 1,
+        });
+
+        console.log('Ürün miktarı artırıldı:', cartItemId);
+      }
+    } catch (error) {
+      console.error('Hata oluştu:', error);
+    }
   };
 
-  const addToWishlist = () => { // sitek listesi ve favori listesini ayır ikiside buna bağlı
-    // İstek listesi
-    console.log('İstek listesine eklendi:', product.title);
-    setWishlistSelected(!isWishlistSelected); //  buna göre çıkartıp eklersin artık dikkat!1!!
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: product.title, // Ürün adını başlık olarak ayarla
+    });
+    const checkWishlist = async () => {
+      try {
+        const userId = auth.currentUser.uid;
+        const wishlistQuery = query(collection(firestore, 'Wishlist'), where('userId', '==', userId), where('title', '==', product.title));
+        const wishlistQuerySnapshot = await getDocs(wishlistQuery);
+        setWishlistSelected(!wishlistQuerySnapshot.empty);
+      } catch (error) {
+        console.error('İstek listesi kontrol hatası:', error);
+      }
+    };
+
+    const checkFavorilist = async () => {
+      try {
+        const userId = auth.currentUser.uid;
+        const favorilistQuery = query(collection(firestore, 'Favorilist'), where('userId', '==', userId), where('title', '==', product.title));
+        const favorilistQuerySnapshot = await getDocs(favorilistQuery);
+        setFavorilistSelected(!favorilistQuerySnapshot.empty);
+      } catch (error) {
+        console.error('Favori listesi kontrol hatası:', error);
+      }
+    };
+
+
+    checkWishlist();
+    checkFavorilist();
+  }, [product.title]);
+  const addToWishlist = async () => {
+    try {
+      const userId = auth.currentUser.uid;
+
+      // Kullanıcının istek listesindeki ürünleri kontrol et
+      const wishlistQuery = query(collection(firestore, 'Wishlist'), where('userId', '==', userId), where('title', '==', product.title));
+      const wishlistQuerySnapshot = await getDocs(wishlistQuery);
+
+      if (wishlistQuerySnapshot.empty) {
+        // İstek listesinde yoksa, ekleyin
+        const wishlistItem = {
+          title: product.title,
+          price: product.price,
+          category: product.category,
+          thumbnail: product.thumbnail,
+          userId: userId,
+        };
+
+        const wishlistCollection = collection(firestore, 'Wishlist');
+        const docRef = await addDoc(wishlistCollection, wishlistItem);
+
+        console.log('Ürün istek listesine eklendi:', docRef.id);
+      } else {
+        // İstek listesinde varsa, silelim
+        const wishlistItemId = wishlistQuerySnapshot.docs[0].id;
+        await deleteDoc(doc(firestore, 'Wishlist', wishlistItemId));
+
+        console.log('Ürün istek listesinden çıkarıldı:', wishlistItemId);
+      }
+    } catch (error) {
+      console.error('Hata oluştu:', error);
+    }
+    setWishlistSelected(!isWishlistSelected);
   };
+
+  const addToFavorilist = async () => {
+    try {
+      const userId = auth.currentUser.uid;
+
+      // Kullanıcının favori listesindeki ürünleri kontrol et
+      const favorilistQuery = query(collection(firestore, 'Favorilist'), where('userId', '==', userId), where('title', '==', product.title));
+      const favorilistQuerySnapshot = await getDocs(favorilistQuery);
+
+      if (favorilistQuerySnapshot.empty) {
+        // Favori listesinde yoksa, ekleyin
+
+        const favorilistItem = {
+          title: product.title,
+          price: product.price,
+          category: product.category,
+          thumbnail: product.thumbnail,
+          userId: userId,
+        };
+
+        const favorilistCollection = collection(firestore, 'Favorilist');
+        const docRef = await addDoc(favorilistCollection, favorilistItem);
+
+        console.log('Ürün favori listesine eklendi:', docRef.id);
+      } else {
+        // Favori listesinde varsa, silelim
+
+        const favorilistItemId = favorilistQuerySnapshot.docs[0].id;
+        await deleteDoc(doc(firestore, 'Favorilist', favorilistItemId));
+
+        console.log('Ürün favori listesinden çıkarıldı:', favorilistItemId);
+
+      }
+    } catch (error) {
+      console.error('Hata oluştu:', error);
+    }
+    setFavorilistSelected(!isFavorilistSelected);
+  };
+  
 
   return (
     <View style={styles.container}>
@@ -25,17 +162,26 @@ const TekilUrun = ({ route }) => {
         <Text style={styles.productDescription}>{product.description}</Text>
       </View>
 
-      <TouchableOpacity style={styles.addToWishlistButton} onPress={addToWishlist}>
-        <Ionicons name="ios-star" size={32} color={isWishlistSelected ? 'yellow' : 'grey'} />
+      <TouchableOpacity style={styles.addToWishlistButton} onPress={addToFavorilist}>
+        <Ionicons name="ios-star" size={32} color={isFavorilistSelected ? 'yellow' : 'grey'} />
       </TouchableOpacity>
 
       <View style={styles.buttonsContainer}>
         <TouchableOpacity style={styles.addToCartButton} onPress={addToCart}>
           <Text style={styles.buttonText}>Sepete Ekle</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.addTolistButton} onPress={addToWishlist}>
-          <Text style={styles.buttonText}>Listeye Ekle</Text>
+        <TouchableOpacity
+          style={[
+            styles.addTolistButton,
+            { backgroundColor: isWishlistSelected ? 'red' : 'green' }
+          ]}
+          onPress={addToWishlist}
+        >
+          <Text style={styles.buttonText}>
+            {isWishlistSelected ? 'İstek Listesinden Çıkar' : 'İstek Listesine Ekle'}
+          </Text>
         </TouchableOpacity>
+
       </View>
     </View>
   );

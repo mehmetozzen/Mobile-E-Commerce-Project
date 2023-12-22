@@ -26,8 +26,10 @@ const UrunSayfasi = ({ route }) => {
     <TouchableOpacity style={styles.productItemContainer} onPress={() => goToProductDetail(item)}>
       <Image style={styles.productPhoto} source={{ uri: item.thumbnail }} />
       <Text style={styles.productName}>{item.title}</Text>
+      <Text style={styles.productPrice}>{item.price} $</Text>
     </TouchableOpacity>
   );
+  
 
   return (
     <SafeAreaView style={{ paddingBottom: 85 }}>
@@ -54,6 +56,11 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 20,
     width: Dimensions.get('window').width / 2 - 20,
+  },
+  productPrice: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'grey', 
   },
   productPhoto: {
     width: '100%',

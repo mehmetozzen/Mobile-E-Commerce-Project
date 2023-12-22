@@ -13,6 +13,8 @@ import Profile from './app/screens/Profile/Profile';
 import Sepet from './app/screens/Sepet/Sepet';
 import ListeNav from './app/screens/Listeler/ListeNav';
 
+import { AntDesign } from '@expo/vector-icons';
+import CreateProduct from './app/screens/Admin/createProduct';
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createBottomTabNavigator();
@@ -54,16 +56,41 @@ function InsideLayout() {
           />
         ),
       }} />
-      <InsideStack.Screen name='Sepet' component={Sepet} options={{
+
+
+      <InsideStack.Screen name='Admin' component={CreateProduct} options={{
         headerShown: false,
         tabBarIcon: ({ focused }) => (
-          <Ionicons
-            name={focused ? "basket" : "basket-outline"}
+          <AntDesign
+            name='user'
             size={24}
             color={focused ? "#0782F9" : "#b3aaaa"}
           />
         ),
       }} />
+
+
+<InsideStack.Screen
+  name='Sepet'
+  component={Sepet}
+  options={{
+    headerShown: true,
+    headerTitle: 'Sepet',
+    headerTitleAlign: 'center', // Başlığı ortala
+    headerTitleStyle: {
+      fontSize: 20, // Başlık font boyutu
+      fontWeight: 'bold', // Kalın font
+    },
+    tabBarIcon: ({ focused }) => (
+      <Ionicons
+        name={focused ? 'basket' : 'basket-outline'}
+        size={24}
+        color={focused ? '#0782F9' : '#b3aaaa'}
+      />
+    ),
+  }}
+/>
+
 
       <InsideStack.Screen name='Profil Ekrani' component={Profile} options={{
         headerShown: false,

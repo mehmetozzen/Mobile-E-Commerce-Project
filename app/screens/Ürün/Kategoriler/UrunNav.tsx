@@ -11,12 +11,45 @@ const Stack = createStackNavigator();
 
 const UrunNav = () => {
   return (
-    <Stack.Navigator initialRouteName="Kategoriler" >
-      <Stack.Screen name="Kategoriler" component={Kategoriler} />
-      <Stack.Screen name="Urunler" component={UrunSayfasi} />
-      <Stack.Screen name="Tekil Urun" component={TekilUrun} />
+    <Stack.Navigator initialRouteName="Kategoriler">
+  <Stack.Screen
+    name="Kategoriler"
+    component={Kategoriler}
+    options={{
+      headerTitle: 'Kategoriler',
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+      },
+    }}
+  />
+  <Stack.Screen
+    name="Urunler"
+    component={UrunSayfasi}
+    options={{
+      headerTitle: 'Urunler',
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+      },
+    }}
+  />
+  <Stack.Screen
+    name="Tekil Urun"
+    component={TekilUrun}
+    options={{
+      headerTitle: 'Tekil Urun',
+      headerTitleAlign: 'center',
+      headerTitleStyle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+      },
+    }}
+  />
+</Stack.Navigator>
 
-    </Stack.Navigator>
   );
 }
 

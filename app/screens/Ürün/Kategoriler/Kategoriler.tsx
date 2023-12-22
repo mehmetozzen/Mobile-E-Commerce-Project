@@ -1,38 +1,55 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, ScrollView, TouchableHighlight, Dimensions, TouchableOpacity, Button } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { auth } from '../../../../firebaseConfig';
+import { auth, firestore } from '../../../../firebaseConfig';
+import { collection, getDocs } from 'firebase/firestore';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Kategoriler = ({ navigation }) => {
-
-  const numColumns = 2; // urunlerin ikili sıralanması (categoriesItemContainer den de degistirmeyi unutma)
+  const numColumns = 2;
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  //kategori resimlerini aynı alıyorsun onu api yazınca değiştiririz.
-  //Urun verilerini çekiyoruz
-  useEffect(() => {
-    fetch('https://dummyjson.com/products')
-      .then(response => response.json())
-      .then(data => {
-        setProducts(data.products);
 
-        // Unique kategorileri al
-        const uniqueCategories = Array.from(new Set(data.products.map(product => product.category)));
-        setCategories(uniqueCategories);
+  const fetchData = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(firestore, 'products'));
+      const productsData = [];
+      querySnapshot.forEach((doc) => {
+        productsData.push({ id: doc.id, ...doc.data() });
+      });
 
-      })
-      .catch(error => console.error('API request error:', error));
-  }, []);
+      setProducts(productsData);
 
-  const renderCategory = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Urunler', { item, products })}>
-      <View style={styles.categoriesItemContainer}>
-        <Image style={styles.categoriesPhoto} source={{ uri: "https://i.dummyjson.com/data/products/1/thumbnail.jpg" }} />
-        <Text style={styles.categoriesName}>{item}</Text>
-      </View>
-    </TouchableOpacity>
+      // Unique kategorileri al
+      const uniqueCategories = Array.from(new Set(productsData.map(product => product.category)));
+      setCategories(uniqueCategories);
+    } catch (error) {
+      console.error('Firestore request error:', error);
+    }
+  };
+
+  // Ekran odaklandığında çalışacak kodları buraya gelir
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [])
   );
 
+  const renderCategory = ({ item }) => {
+    // products içerisinden category'si item ile eşleşen ilk ürünü bul
+    const matchingProduct = products.find(product => product.category === item);
+
+    return (
+      <TouchableOpacity onPress={() => navigation.navigate('Urunler', { item, products })}>
+        <View style={styles.categoriesItemContainer}>
+          {matchingProduct && (
+            <Image style={styles.categoriesPhoto} source={{ uri: matchingProduct.thumbnail }} />
+          )}
+          <Text style={styles.categoriesName}>{item}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={{ paddingBottom: 75 }}>
@@ -43,10 +60,8 @@ const Kategoriler = ({ navigation }) => {
         numColumns={numColumns}
       />
     </SafeAreaView>
-
   );
 };
-
 export default Kategoriler;
 
 
