@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth, firestore } from '../../../../firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
@@ -9,6 +9,7 @@ const Kategoriler = ({ navigation }) => {
   const numColumns = 2;
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
     try {
@@ -20,15 +21,15 @@ const Kategoriler = ({ navigation }) => {
 
       setProducts(productsData);
 
-      // Unique kategorileri al
       const uniqueCategories = Array.from(new Set(productsData.map(product => product.category)));
       setCategories(uniqueCategories);
     } catch (error) {
       console.error('Firestore request error:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Ekran odaklandığında çalışacak kodları buraya gelir
   useFocusEffect(
     React.useCallback(() => {
       fetchData();
@@ -36,7 +37,6 @@ const Kategoriler = ({ navigation }) => {
   );
 
   const renderCategory = ({ item }) => {
-    // products içerisinden category'si item ile eşleşen ilk ürünü bul
     const matchingProduct = products.find(product => product.category === item);
 
     return (
@@ -51,6 +51,14 @@ const Kategoriler = ({ navigation }) => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={{ paddingBottom: 75 }}>
       <FlatList
@@ -62,11 +70,8 @@ const Kategoriler = ({ navigation }) => {
     </SafeAreaView>
   );
 };
+
 export default Kategoriler;
-
-
-
-
 
 const styles = StyleSheet.create({
   categoriesItemContainer: {
@@ -78,7 +83,7 @@ const styles = StyleSheet.create({
     borderColor: '#cccccc',
     borderWidth: 0.5,
     borderRadius: 20,
-    width: Dimensions.get('window').width / 2 - 20, // İki sütunlu düzen için genişliği ayarlıyoruz
+    width: Dimensions.get('window').width / 2 - 20,
   },
   categoriesPhoto: {
     width: '100%',
@@ -102,9 +107,9 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginTop: 8
   },
-  categoriesInfo: {
-    marginTop: 3,
-    marginBottom: 5
-  }
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
-

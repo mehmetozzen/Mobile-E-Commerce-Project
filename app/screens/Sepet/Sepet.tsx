@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { collection, query, where, getDocs, deleteDoc, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -18,7 +18,7 @@ const Sepet = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      // Ekran odaklandığında çalışacak kodlar buraya gelir
+     
       fetchUserCart();
     }, [userId])
   );
@@ -92,27 +92,24 @@ const Sepet = () => {
       [itemId]: newQuantity,
     }));
   
-    // Firebase'deki quantity değerini güncelle
     updateQuantityInFirestore(itemId, newQuantity);
   };
   
   const increaseQuantity = async (itemId) => {
     const updatedQuantity = (itemQuantities[itemId] || 0) + 1;
   
-    // Firebase'deki quantity değerini artır
     await updateQuantityInFirestore(itemId, updatedQuantity);
-  
-    // State'i güncelle
+
     updateQuantity(itemId, updatedQuantity);
   };
   
   const decreaseQuantity = async (itemId) => {
     const updatedQuantity = Math.max((itemQuantities[itemId] || 0) - 1, 0);
   
-    // Firebase'deki quantity değerini azalt
+ 
     await updateQuantityInFirestore(itemId, updatedQuantity);
   
-    // State'i güncelle
+ 
     updateQuantity(itemId, updatedQuantity);
   };
 
@@ -125,8 +122,7 @@ const Sepet = () => {
   };
 
   const handleBuyButtonPress = () => {
-    console.log('Sepeti Satın Al');
-    // Burada sepeti satın alma işlemleri gerçekleştirilebilir
+    alert("Satın aldınız!")
   };
 
   return (

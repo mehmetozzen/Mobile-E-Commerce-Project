@@ -20,11 +20,11 @@ const CreateProduct = () => {
 
   const handleAddProduct = async () => {
     try {
-      // Verileri Firestore'a ekle
+      
       const docRef = await addDoc(collection(firestore, 'products'), newProduct);
 
       console.log('Product added with ID:', docRef.id);
-      // Başarılı eklemenin ardından inputları temizle
+      
       setNewProduct({
         title: '',
         description: '',
@@ -77,7 +77,7 @@ const CreateProduct = () => {
         value={newProduct.thumbnail}
         onChangeText={(text) => handleInputChange('thumbnail', text)}
       />
-      <Button title="Add Product" onPress={handleAddProduct} />
+      <Button title="Ürünü Ekle" onPress={handleAddProduct} />
     </View>
   );
 };

@@ -9,12 +9,13 @@ import {
   Modal,
 } from 'react-native';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../../firebaseConfig';
+import { auth, firestore } from '../../../firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
+import { addDoc, collection } from 'firebase/firestore';
 
 export const RegisterModal = ({ isVisible, onClose }) => {
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
+  const [username, setUsername] = useState('');
+
   const [emailReg, setEmailReg] = useState('');
   const [passwordReg, setPasswordReg] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -37,7 +38,16 @@ export const RegisterModal = ({ isVisible, onClose }) => {
 
       setPasswordError('');
 
-      await createUserWithEmailAndPassword(auth, emailReg, passwordReg);
+      const userCredential = await createUserWithEmailAndPassword(auth, emailReg, passwordReg);
+      const user = userCredential.user;
+
+      // Firestore'a kullanıcı bilgilerini ekleme
+      await addDoc(collection(firestore, 'users'), {
+        uid: user.uid,
+        username: username,
+      });
+
+
       console.log('Kullanıcı başarıyla kaydedildi!');
       onClose();
     } catch (error) {
@@ -56,15 +66,9 @@ export const RegisterModal = ({ isVisible, onClose }) => {
         <View style={styles.modalContent}>
           <View style={styles.modalInput}>
             <TextInput
-              placeholder="Ad"
-              value={name}
-              onChangeText={(text) => setName(text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Soyad"
-              value={surname}
-              onChangeText={(text) => setSurname(text)}
+              placeholder="Kullanıcı Adı"
+              value={username}
+              onChangeText={(text) => setUsername(text)}
               style={styles.input}
             />
             <TextInput

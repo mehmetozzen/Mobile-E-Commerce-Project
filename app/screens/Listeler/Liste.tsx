@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Button,StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Liste = ({ navigation }) => {
   
@@ -14,7 +15,7 @@ const Liste = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       
 
       <TouchableOpacity onPress={navigateToIstekListesi} style={styles.button}>
@@ -24,7 +25,7 @@ const Liste = ({ navigation }) => {
       <TouchableOpacity onPress={navigateToFavoriUrunListesi} style={styles.button}>
         <Text style={styles.buttonText}>Favori Ürün Listesi</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
