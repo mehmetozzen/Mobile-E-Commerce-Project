@@ -7,7 +7,7 @@ import Kategoriler from './app/screens/Ürün/Kategoriler/Kategoriler';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { auth, firestore } from './firebaseConfig';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons,MaterialIcons } from '@expo/vector-icons';
 import UrunNav from './app/screens/Ürün/Kategoriler/UrunNav';
 import Profile from './app/screens/Profile/Profile';
 import Sepet from './app/screens/Sepet/Sepet';
@@ -88,8 +88,7 @@ function InsideLayout() {
         <InsideStack.Screen name='Admin' component={AdminNav} options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
-            <AntDesign
-              name='user'
+            <MaterialIcons name="admin-panel-settings"
               size={24}
               color={focused ? "#0782F9" : "#b3aaaa"}
             />

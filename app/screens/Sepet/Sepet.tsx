@@ -5,6 +5,7 @@ import { collection, query, where, getDocs, deleteDoc, doc, updateDoc, arrayUnio
 import { MaterialIcons } from '@expo/vector-icons';
 import { auth, firestore } from '../../../firebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
+import * as Notifications from 'expo-notifications';
 
 const Sepet = () => {
   const [userCart, setUserCart] = useState([]);
@@ -18,7 +19,7 @@ const Sepet = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-     
+
       fetchUserCart();
     }, [userId])
   );
@@ -26,13 +27,13 @@ const Sepet = () => {
   const fetchUserCart = async () => {
     try {
       setRefreshing(true);
-  
+
       const q = query(collection(firestore, 'Sepet'), where('userId', '==', userId));
       const querySnapshot = await getDocs(q);
-  
+
       const userCartData = [];
       const quantities = {};
-  
+
       querySnapshot.forEach((doc) => {
         const itemData: {
           id: string;
@@ -46,8 +47,8 @@ const Sepet = () => {
         userCartData.push(itemData);
         quantities[itemData.id] = itemData.quantity;
       });
-      
-  
+
+
       setUserCart(userCartData);
       setItemQuantities(quantities);
       setRefreshing(false);
@@ -56,7 +57,7 @@ const Sepet = () => {
       setRefreshing(false);
     }
   };
-  
+
 
   const removeFromCart = async (itemId) => {
     try {
@@ -85,31 +86,31 @@ const Sepet = () => {
       console.error('Hata oluştu:', error);
     }
   };
-  
+
   const updateQuantity = (itemId, newQuantity) => {
     setItemQuantities((prevQuantities) => ({
       ...prevQuantities,
       [itemId]: newQuantity,
     }));
-  
+
     updateQuantityInFirestore(itemId, newQuantity);
   };
-  
+
   const increaseQuantity = async (itemId) => {
     const updatedQuantity = (itemQuantities[itemId] || 0) + 1;
-  
+
     await updateQuantityInFirestore(itemId, updatedQuantity);
 
     updateQuantity(itemId, updatedQuantity);
   };
-  
+
   const decreaseQuantity = async (itemId) => {
     const updatedQuantity = Math.max((itemQuantities[itemId] || 0) - 1, 0);
-  
- 
+
+
     await updateQuantityInFirestore(itemId, updatedQuantity);
-  
- 
+
+
     updateQuantity(itemId, updatedQuantity);
   };
 
@@ -120,10 +121,24 @@ const Sepet = () => {
   const handleRefresh = () => {
     fetchUserCart();
   };
-
-  const handleBuyButtonPress = () => {
-    alert("Satın aldınız!")
-  };
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+  async function orderNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Siparişiniz Alındı! 🤠",
+        body: 'Yakında bilgilendirme maili alacaksınız.',
+        data: { data: 'goes here' },
+      },
+      trigger: { seconds: 2 },
+    });
+  }
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -165,7 +180,9 @@ const Sepet = () => {
       <View style={styles.footer}>
         <Text style={styles.totalText}>Toplam Fiyat:</Text>
         <Text style={styles.totalPrice}>{getTotalPrice()} $</Text>
-        <TouchableOpacity style={styles.buyButton} onPress={handleBuyButtonPress}>
+        <TouchableOpacity style={styles.buyButton} onPress={async () => {
+          await orderNotification();
+        }}>
           <Text style={styles.buyButtonText}>Satın Al</Text>
         </TouchableOpacity>
       </View>
@@ -255,7 +272,7 @@ const styles = StyleSheet.create({
     borderRadius: 16, // Daha yuvarlatılmış köşeler
     paddingVertical: 20, // Daha uzun bir buton
     alignItems: 'center',
-    padding:100,
+    padding: 100,
     justifyContent: 'center',
     marginTop: 16, // Biraz daha aşağıda
   },

@@ -7,11 +7,11 @@ const Liste = ({ navigation }) => {
   
 
   const navigateToIstekListesi = () => {
-    navigation.navigate("Istek");  // 'istek' sayfa adı doğru olmalı
+    navigation.navigate("Istek");  
   };
 
   const navigateToFavoriUrunListesi = () => {
-    navigation.navigate('Fav');  // 'fav' sayfa adı doğru olmalı
+    navigation.navigate('Fav');  
   };
 
   return (
