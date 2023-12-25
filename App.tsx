@@ -1,9 +1,7 @@
-import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Login from './app/screens/Login/Login';
-import Kategoriler from './app/screens/Ürün/Kategoriler/Kategoriler';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { auth, firestore } from './firebaseConfig';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -12,9 +10,6 @@ import UrunNav from './app/screens/Ürün/Kategoriler/UrunNav';
 import Profile from './app/screens/Profile/Profile';
 import Sepet from './app/screens/Sepet/Sepet';
 import ListeNav from './app/screens/Listeler/ListeNav';
-
-import { AntDesign } from '@expo/vector-icons';
-import CreateProduct from './app/screens/Admin/createProduct';
 import AdminNav from './app/screens/Admin/AdminNav';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
