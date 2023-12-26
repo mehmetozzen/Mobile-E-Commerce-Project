@@ -62,8 +62,20 @@ export const RegisterModal = ({ isVisible, onClose }) => {
       visible={isVisible}
       onRequestClose={() => onClose()}
     >
+
+      
+
       <View style={styles.modalContainer}>
+        
         <View style={styles.modalContent}>
+        <View style={styles.visualTitleContainer}>
+        <Text style={styles.visualTitleText}>
+
+          <Text>Kayıt Ol! </Text>
+
+        </Text>
+        <View style={styles.titleUnderline}></View>
+      </View>
           <View style={styles.modalInput}>
             <TextInput
               placeholder="Kullanıcı Adı"
@@ -109,6 +121,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  visualTitleContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  visualTitleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    flexDirection: 'row',
+  },
+  blueText: {
+    color: '#2C3E50',
+  },
+  titleUnderline: {
+    backgroundColor: '#2C3E50',
+    height: 2,
+    width: '50%',
+    marginTop: 5,
+    marginBottom: 50
+  },
   inputContainer: {
     width: '80%',
   },
@@ -136,16 +168,16 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   button: {
-    backgroundColor: '#0782F9',
+    backgroundColor: '#2C3E50',
     width: '100%',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
   },
   buttonOutline: {
-    backgroundColor: 'white',
+    backgroundColor: '#66707a',
     marginTop: 5,
-    borderColor: '#0782F9',
+    borderColor: '#66707a',
     borderWidth: 2,
   },
   buttonText: {
@@ -154,7 +186,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   buttonOutlineText: {
-    color: '#0782F9',
+    color: 'white',
     fontWeight: '700',
     fontSize: 16,
   },
@@ -178,7 +210,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '80%',
     borderWidth: 2,
-    borderColor: '#0782F9',
+    borderColor: 'white',
 
   },
   modalInput: {

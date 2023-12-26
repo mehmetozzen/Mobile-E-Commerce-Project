@@ -6,9 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Modal,
 } from 'react-native';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
 import { RegisterModal } from './RegisterModal';
@@ -35,6 +34,16 @@ export default function Login() {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
+      <View style={styles.visualTitleContainer}>
+        <Text style={styles.visualTitleText}>
+          
+          <Text>Giriş </Text>
+          
+          <Text>Yap</Text>
+        </Text>
+        <View style={styles.titleUnderline}></View>
+      </View>
+
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"
@@ -82,12 +91,31 @@ export default function Login() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  visualTitleContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  visualTitleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    flexDirection: 'row',
+  },
+  blueText: {
+    color: '#2C3E50',
+  },
+  titleUnderline: {
+    backgroundColor: '#2C3E50',
+    height: 2,
+    width: '50%',
+    marginTop: 5,
+    marginBottom: 50
   },
   inputContainer: {
     width: '80%',
@@ -98,7 +126,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     marginTop: 5,
-
   },
   inputPass: {
     backgroundColor: 'white',
@@ -106,8 +133,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     marginTop: 5,
-    width: '87%'
-
+    width: '87%',
   },
   buttonContainer: {
     width: '60%',
@@ -116,25 +142,25 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   button: {
-    backgroundColor: '#0782F9',
+    backgroundColor: '#2C3E50',
     width: '100%',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-  },
-  buttonOutline: {
-    backgroundColor: 'white',
-    marginTop: 5,
-    borderColor: '#0782F9',
-    borderWidth: 2,
   },
   buttonText: {
     color: 'white',
     fontWeight: '700',
     fontSize: 16,
   },
+  buttonOutline: {
+    backgroundColor: '#66707a',
+    marginTop: 5,
+    borderColor: 'white',
+    borderWidth: 2,
+  },
   buttonOutlineText: {
-    color: '#0782F9',
+    color: 'white',
     fontWeight: '700',
     fontSize: 16,
   },
@@ -143,26 +169,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-
-
-  },
-  modalContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F2F2F2',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-    borderWidth: 2,
-    borderColor: '#0782F9',
-
-  },
-  modalInput: {
-    width: '80%',
-  }
-
 });
