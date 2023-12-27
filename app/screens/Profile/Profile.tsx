@@ -100,7 +100,7 @@ const Profile = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
-        <Text style={styles.username}>{username}</Text>
+        <Text style={styles.username}>Hoşgeldin, {username}!</Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={handleUsernameChange} style={[styles.button, styles.buttonBlue]}>
             <Text style={styles.buttonText}>Kullanıcı Adı Değiştir</Text>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Image, Modal, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../../../firebaseConfig';
+import * as Notifications from 'expo-notifications';
 
 const UpdateProduct = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -16,6 +17,7 @@ const UpdateProduct = ({ navigation }) => {
     category: '',
     thumbnail: '',
   });
+  const [oldPrice, setOldPrice] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -60,19 +62,44 @@ const UpdateProduct = ({ navigation }) => {
       category: product.category,
       thumbnail: product.thumbnail,
     });
+    setOldPrice(product.price.toString());
     setModalVisible(true);
   };
-
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+  async function IndirimNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Bir Ürünün Fiyatı Düştü! 🚀🚀🚀",
+        body: updatedProduct.title + ' ürününün yeni fiyatı ' + updatedProduct.price + "$ Kaçırmayın !!",
+        data: { data: 'goes here' },
+      },
+      trigger: { seconds: 2 },
+    });
+  }
   const handleUpdateProduct = async () => {
     try {
-      setIsLoading(true); // Güncelleme işlemi başladığında loading durumunu aktifleştir
+      setIsLoading(true);
+
+      const oldPriceNumber = parseFloat(oldPrice);
+      const updatedPriceNumber = parseFloat(updatedProduct.price);
+
+      if (oldPriceNumber > updatedPriceNumber) {
+        await IndirimNotification();
+      }
+
       await updateDoc(doc(firestore, 'products', selectedProduct.id), updatedProduct);
       console.log('Product updated successfully!');
       setModalVisible(false);
     } catch (error) {
       console.error('Error updating product:', error);
     } finally {
-      setIsLoading(false); // Güncelleme işlemi tamamlandığında loading durumunu devre dışı bırak
+      setIsLoading(false);
     }
   };
 
@@ -98,7 +125,7 @@ const UpdateProduct = ({ navigation }) => {
       ) : (
         <>
           <Text style={styles.header}>Ürünleri Güncelle</Text>
-          
+
           <TextInput
             style={styles.searchInput}
             placeholder="Ürün Ara"

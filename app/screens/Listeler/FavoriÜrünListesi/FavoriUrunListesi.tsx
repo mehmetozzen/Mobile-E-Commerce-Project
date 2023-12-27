@@ -85,7 +85,7 @@ const FavoriUrunListesi = () => {
         <Image style={styles.favoriUrunResim} source={{ uri: item.thumbnail }} />
         <View style={styles.favoriUrunBilgi}>
           <Text>{item.title}</Text>
-          <Text>{item.price}</Text>
+          <Text>{item.price} $</Text>
         </View>
         <View style={styles.butonContainer}>
           <TouchableOpacity style={[styles.buton, { backgroundColor: 'green' }]} onPress={handleAddToCart}>

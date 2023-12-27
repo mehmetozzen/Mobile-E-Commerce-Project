@@ -85,7 +85,7 @@ const IstekListesi = () => {
         <Image style={styles.istekUrunResim} source={{ uri: item.thumbnail }} />
         <View style={styles.istekUrunBilgi}>
           <Text>{item.title}</Text>
-          <Text>{item.price}</Text>
+          <Text>{item.price} $</Text>
         </View>
         <View style={styles.butonContainer}>
           <TouchableOpacity style={[styles.buton, { backgroundColor: 'green' }]} onPress={handleAddToCart}>
