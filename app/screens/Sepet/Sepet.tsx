@@ -37,7 +37,7 @@ const Sepet = () => {
       querySnapshot.forEach((doc) => {
         const itemData: {
           id: string;
-          title?: string; // Bu özellikler Firebase'den gelen verinin içindekilerdir, ihtiyaca göre güncelleyebilirsiniz
+          title?: string; 
           price?: number;
           category?: string;
           thumbnail?: string;
@@ -138,6 +138,23 @@ const Sepet = () => {
       trigger: { seconds: 2 },
     });
   }
+
+  const clearCart = async () => {
+    try {
+      
+      const q = query(collection(firestore, 'Sepet'), where('userId', '==', userId));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+
+     
+      setUserCart([]);
+      setItemQuantities({});
+    } catch (error) {
+      console.error('Hata oluştu:', error);
+    }
+  };
   
 
   return (
@@ -182,6 +199,7 @@ const Sepet = () => {
         <Text style={styles.totalPrice}>{getTotalPrice()} $</Text>
         <TouchableOpacity style={styles.buyButton} onPress={async () => {
           await orderNotification();
+          await clearCart(); // Sepeti temizle
         }}>
           <Text style={styles.buyButtonText}>Satın Al</Text>
         </TouchableOpacity>
