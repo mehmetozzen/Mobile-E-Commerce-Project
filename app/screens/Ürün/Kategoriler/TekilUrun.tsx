@@ -14,19 +14,19 @@ const TekilUrun = ({ route }) => {
     try {
       const userId = auth.currentUser.uid;
 
-      // Eklenecek ürün sepette var mı diye kontrol et
+      
       const cartQuery = query(collection(firestore, 'Sepet'), where('userId', '==', userId), where('title', '==', product.title));
       const cartQuerySnapshot = await getDocs(cartQuery);
 
       if (cartQuerySnapshot.empty) {
-        // Sepette yoksa yeni ürünü ekleyin
+    
         const cartItem = {
           title: product.title,
           price: product.price,
           category: product.category,
           thumbnail: product.thumbnail,
           userId: userId,
-          quantity: 1, // Yeni eklenen ürünün miktarı 1
+          quantity: 1, 
         };
 
         const cartCollection = collection(firestore, 'Sepet');
@@ -34,7 +34,7 @@ const TekilUrun = ({ route }) => {
 
         console.log('Ürün sepete eklendi:', docRef.id);
       } else {
-        // Sepette varsa miktarını artırın
+        
         const cartItem = cartQuerySnapshot.docs[0].data();
         const cartItemId = cartQuerySnapshot.docs[0].id;
 
@@ -51,7 +51,7 @@ const TekilUrun = ({ route }) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: product.title, // Ürün adını başlık olarak ayarla
+      headerTitle: product.title, 
     });
     const checkWishlist = async () => {
       try {
@@ -83,12 +83,12 @@ const TekilUrun = ({ route }) => {
     try {
       const userId = auth.currentUser.uid;
 
-      // Kullanıcının istek listesindeki ürünleri kontrol et
+      
       const wishlistQuery = query(collection(firestore, 'Wishlist'), where('userId', '==', userId), where('title', '==', product.title));
       const wishlistQuerySnapshot = await getDocs(wishlistQuery);
 
       if (wishlistQuerySnapshot.empty) {
-        // İstek listesinde yoksa, ekleyin
+       
         const wishlistItem = {
           title: product.title,
           price: product.price,
@@ -102,7 +102,7 @@ const TekilUrun = ({ route }) => {
 
         console.log('Ürün istek listesine eklendi:', docRef.id);
       } else {
-        // İstek listesinde varsa, silelim
+        
         const wishlistItemId = wishlistQuerySnapshot.docs[0].id;
         await deleteDoc(doc(firestore, 'Wishlist', wishlistItemId));
 
