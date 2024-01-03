@@ -1,4 +1,4 @@
-# Örnek Proje README
+# Mobil Proje Ödevi
 
 ## Admin Girişi
 
